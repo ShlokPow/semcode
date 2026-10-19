@@ -1,0 +1,28 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: semcode
+          POSTGRES_PASSWORD: semcode
+          POSTGRES_DB: semcode
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U semcode" --health-interval 2s
+          --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://semcode:semcode@localhost:5432/semcode
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      - run: uv run semcode db init
+      - run: uv run pytest

@@ -1,0 +1,28 @@
+[project]
+name = "semcode"
+version = "0.1.0"
+description = "Hybrid semantic + keyword code search, exposed to Claude Code over MCP"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "psycopg[binary]>=3.2",
+    "pydantic-settings>=2.4",
+    "typer>=0.12",
+]
+
+[project.scripts]
+semcode = "semcode.cli:app"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
